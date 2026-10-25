@@ -1,3 +1,5 @@
+<!-- Artwork is generated: run `python3 design/build_assets.py` to refresh the contribution count. -->
+
 <p align="center">
   <a href="https://ache.lol">
     <picture>
