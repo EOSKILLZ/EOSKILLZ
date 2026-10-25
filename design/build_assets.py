@@ -28,11 +28,20 @@ FONT_URL = (
     "bricolagegrotesque/BricolageGrotesque%5Bopsz,wdth,wght%5D.ttf"
 )
 FONT_PATH = CACHE / "BricolageGrotesque.ttf"
+MONO_URL = (
+    "https://raw.githubusercontent.com/google/fonts/main/ofl/"
+    "jetbrainsmono/JetBrainsMono%5Bwght%5D.ttf"
+)
+MONO_PATH = CACHE / "JetBrainsMono.ttf"
+FONTS = {
+    "display": (FONT_URL, FONT_PATH, {"opsz": 24, "wdth": 100}),
+    "mono": (MONO_URL, MONO_PATH, {}),
+}
 SCREENSHOT_URL = "https://ache.lol/homepage/product-desktop-working.webp"
 SCREENSHOT_PATH = CACHE / "ache-desktop.webp"
 CONTRIB_URL = "https://github-contributions-api.jogruber.de/v4/EOSKILLZ?y=last"
 
-W, H = 1040, 545
+W, H = 1040, 600
 PAD = 56
 UPEM = 1000
 
@@ -56,12 +65,14 @@ def calendar() -> dict:
 
 
 @lru_cache(maxsize=None)
-def font_instance(weight: int, opsz: int) -> tuple[TTFont, hb.Font]:
+def font_instance(family: str, weight: int, opsz: int) -> tuple[TTFont, hb.Font]:
     """Return an instanced TTFont plus a HarfBuzz font at the same instance."""
-    base = TTFont(ensure(FONT_URL, FONT_PATH))
-    inst = instantiateVariableFont(
-        base, {"wght": weight, "opsz": opsz, "wdth": 100}, inplace=False
-    )
+    url, path, axes = FONTS[family]
+    base = TTFont(ensure(url, path))
+    settings = {"wght": weight, **axes}
+    if "opsz" in settings:
+        settings["opsz"] = opsz
+    inst = instantiateVariableFont(base, settings, inplace=False)
     tmp = tempfile.NamedTemporaryFile(suffix=".ttf", delete=False)
     inst.save(tmp.name)
     tmp.close()
@@ -72,9 +83,9 @@ def font_instance(weight: int, opsz: int) -> tuple[TTFont, hb.Font]:
     return inst, hb_font
 
 
-def shape(text: str, weight: int, opsz: int, tracking: float):
+def shape(text: str, weight: int, opsz: int, tracking: float, family: str = "display"):
     """Shape text, returning (glyph paths, advance width) in font units."""
-    inst, hb_font = font_instance(weight, opsz)
+    inst, hb_font = font_instance(family, weight, opsz)
     glyph_order = inst.getGlyphOrder()
     glyph_set = inst.getGlyphSet()
 
@@ -114,8 +125,9 @@ def text(
     tracking: float = 0.0,
     anchor: str = "start",
     opacity: float = 1.0,
+    family: str = "display",
 ) -> tuple[str, float]:
-    paths, width_units = shape(s, weight, opsz, tracking)
+    paths, width_units = shape(s, weight, opsz, tracking, family)
     width = width_units * size / UPEM
     if anchor == "end":
         x -= width
@@ -136,24 +148,30 @@ def text(
 
 THEME = {
     "light": {
-        "bg": "#F2EDE6",
-        "ink": "#17130F",
-        "muted": "#6C6157",
-        "hair": "#17130F",
-        "hair_op": 0.14,
-        "ember": "#D9491F",
-        "ember_small": "#B43E1B",
-        "glow": 0.05,
+        "bg": "#FBFAF8",
+        "ink": "#172126",
+        "muted": "#6E7274",
+        "hair": "#172126",
+        "hair_op": 0.12,
+        "ember": "#E4572E",
+        "ember_deep": "#B23A12",
+        "ember_light": "#F59A4B",
+        "teal": "#087B96",
+        "glow": 0.06,
+        "grid": 0.030,
     },
     "dark": {
-        "bg": "#0A0A0A",
-        "ink": "#F7EEE9",
-        "muted": "#A89D92",
-        "hair": "#F7EEE9",
-        "hair_op": 0.16,
-        "ember": "#FF6B4A",
-        "ember_small": "#FF6B4A",
-        "glow": 0.09,
+        "bg": "#0D0F10",
+        "ink": "#F5F2ED",
+        "muted": "#9B9C9B",
+        "hair": "#F5F2ED",
+        "hair_op": 0.14,
+        "ember": "#FF7A4D",
+        "ember_deep": "#E2542A",
+        "ember_light": "#FFB27A",
+        "teal": "#4FC3D9",
+        "glow": 0.10,
+        "grid": 0.045,
     },
 }
 
@@ -163,80 +181,99 @@ def hero(theme_name: str) -> str:
     right = W - PAD
     body = [f'<rect width="{W}" height="{H}" fill="{c["bg"]}"/>']
 
-    # Diffuse ember glow, restrained.
+    # Technical grid, barely there.
+    body.append(f'<g stroke="{c["hair"]}" stroke-opacity="{c["grid"]}" stroke-width="1">')
+    x = PAD
+    while x <= right:
+        body.append(f'<path d="M{x} 84V{H}"/>')
+        x += 80
+    y = 84
+    while y <= H:
+        body.append(f'<path d="M{PAD} {y}H{right}"/>')
+        y += 80
+    body.append("</g>")
+
+    # Ember glow behind the mark.
     body.append(
-        f"""<radialGradient id="glow" cx="0.74" cy="0.36" r="0.62">
+        f"""<radialGradient id="glow" cx="0.79" cy="0.36" r="0.5">
       <stop offset="0" stop-color="{c['ember']}" stop-opacity="{c['glow']}"/>
       <stop offset="1" stop-color="{c['ember']}" stop-opacity="0"/>
     </radialGradient>
     <rect width="{W}" height="{H}" fill="url(#glow)"/>"""
     )
 
-    # Header: wordmark left, place right, hairline under.
-    body.append(f'<rect x="{PAD}" y="44" width="10" height="10" fill="{c["ember"]}"/>')
+    # The Ache mark, monumental: chevron bleeding off the bottom edge.
+    body.append(
+        f"""<linearGradient id="mark" x1="0.1" y1="1" x2="0.9" y2="0">
+      <stop offset="0" stop-color="{c['ember_deep']}"/>
+      <stop offset="1" stop-color="{c['ember_light']}"/>
+    </linearGradient>
+    <path d="M690 600 L838 190 L986 600" fill="none" stroke="url(#mark)"
+      stroke-width="56" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="838" cy="130" r="18" fill="{c['ember_light']}"/>"""
+    )
+
+    # Frame: wordmark, place, hairline.
+    body.append(f'<rect x="{PAD}" y="42" width="8" height="8" fill="{c["ember"]}"/>')
     brand, brand_w = text(
-        "SKILLZ", PAD + 22, 56, 20, c["ink"], weight=600, opsz=48, tracking=0.06
+        "SKILLZ", PAD + 18, 52, 17, c["ink"], weight=600, opsz=48, tracking=0.06
     )
     body.append(brand)
     handle, _ = text(
-        "/ EOSKILLZ", PAD + 22 + brand_w + 12, 56, 15, c["muted"], weight=500,
-        opsz=24, tracking=0.04,
+        "/ EOSKILLZ", PAD + 18 + brand_w + 12, 51, 12, c["muted"], weight=400,
+        tracking=0.14, family="mono",
     )
     body.append(handle)
     place, _ = text(
-        "NEW YORK, US", right, 56, 14, c["muted"], weight=500, opsz=24,
-        tracking=0.10, anchor="end",
+        "NEW YORK, US", right, 51, 12, c["muted"], weight=400, tracking=0.14,
+        anchor="end", family="mono",
     )
     body.append(place)
     body.append(
         f'<rect x="{PAD}" y="84" width="{W - PAD * 2}" height="1" fill="{c["hair"]}" opacity="{c["hair_op"]}"/>'
     )
 
-    # Eyebrow
-    body.append(f'<rect x="{PAD}" y="133" width="8" height="8" fill="{c["ember"]}"/>')
+    # Eyebrow: tiny, technical, aligned to the frame.
+    body.append(f'<rect x="{PAD}" y="238" width="7" height="7" fill="{c["ember"]}"/>')
     eyebrow, _ = text(
-        "INDEPENDENT SOFTWARE ENGINEER", PAD + 20, 142, 15, c["muted"], weight=500,
-        opsz=24, tracking=0.14,
+        "INDEPENDENT SOFTWARE ENGINEER", PAD + 16, 245, 12, c["muted"],
+        weight=400, tracking=0.18, family="mono",
     )
     body.append(eyebrow)
 
-    # Headline: one line, evenly centered, second phrase carries the accent.
-    size, track = 168, -0.045
-    _, total_units = shape("I build Ache.", 600, 96, track)
-    _, name_units = shape("Ache.", 600, 96, track)
-    total_w = total_units * size / UPEM
+    # Headline: quiet verb, loud name.
+    build, _ = text(
+        "I build", PAD, 350, 56, c["ink"], weight=500, opsz=48, tracking=-0.01
+    )
+    body.append(build)
+
+    size, track = 190, -0.05
+    _, name_units = shape("Ache", 600, 96, track)
     name_w = name_units * size / UPEM
-    start = (W - total_w) / 2
-    lead, _ = text("I build ", start, 330, size, c["ink"], weight=600, opsz=96, tracking=track)
-    name, _ = text("Ache.", start + total_w - name_w, 330, size, c["ember"], weight=600, opsz=96, tracking=track)
-    body.append(lead)
+    name, _ = text("Ache", PAD - 4, 508, size, c["ink"], weight=600, opsz=96, tracking=track)
+    period, _ = text(
+        ".", PAD - 4 + name_w, 508, size, c["teal"], weight=600, opsz=96,
+        tracking=track,
+    )
     body.append(name)
+    body.append(period)
 
-    sub, _ = text(
-        "AI workspace, API, CLI, and desktop app.", W / 2, 402, 30, c["muted"],
-        weight=500, opsz=32, tracking=0.005, anchor="middle",
-    )
-    body.append(sub)
-
-    # Footer strip
-    body.append(
-        f'<rect x="{PAD}" y="468" width="{W - PAD * 2}" height="1" fill="{c["hair"]}" opacity="{c["hair_op"]}"/>'
-    )
-    foot_l, _ = text(
-        "CHAT · CODE · AUTOMATE", PAD, 507, 15, c["muted"], weight=500, opsz=24,
-        tracking=0.10,
-    )
-    foot_r, _ = text(
-        "ACHE.LOL", right, 507, 15, c["ember_small"], weight=600, opsz=24,
-        tracking=0.10, anchor="end",
+    # Footer strip: what it is, where to go.
+    foot_l, foot_l_w = text(
+        "AI WORKSPACE / API / CLI / DESKTOP", PAD, 578, 12, c["muted"],
+        weight=400, tracking=0.14, family="mono",
     )
     body.append(foot_l)
+    foot_r, _ = text(
+        " · ACHE.LOL", PAD + foot_l_w, 578, 12, c["teal"], weight=500,
+        tracking=0.14, family="mono",
+    )
     body.append(foot_r)
 
     title = "Skillz — independent software engineer. I build Ache."
     desc = (
-        "Warm editorial hero on a paper background: I build Ache. "
-        "Ache is an AI workspace, API, CLI, and desktop app."
+        "The Ache chevron mark in ember on a fine technical grid, with the line "
+        "I build Ache. Ache is an AI workspace, API, CLI, and desktop app."
     )
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" '
@@ -249,8 +286,8 @@ def hero(theme_name: str) -> str:
 
 CARD_H = 425
 CARD_LEVELS = {
-    "light": ["#E4DBD0", "#F2C4B2", "#E99373", "#DF6B45", "#D9491F"],
-    "dark": ["#1B1713", "#59291B", "#A34226", "#E05533", "#FF6B4A"],
+    "light": ["#EDEAE5", "#F7CBB9", "#F0A07D", "#E6744C", "#E4572E"],
+    "dark": ["#1B1C1D", "#5C2A18", "#A63F23", "#DD5836", "#FF7A4D"],
 }
 
 
@@ -284,13 +321,13 @@ def contributions(theme_name: str) -> str:
     body = [f'<rect width="{W}" height="{CARD_H}" fill="{c["bg"]}"/>']
     body.append(f'<rect x="{PAD}" y="44" width="10" height="10" fill="{c["ember"]}"/>')
     label, _ = text(
-        "GITHUB ACTIVITY", PAD + 22, 56, 18, c["ink"], weight=600, opsz=48,
-        tracking=0.16,
+        "GITHUB ACTIVITY", PAD + 22, 55, 13, c["ink"], weight=500,
+        tracking=0.18, family="mono",
     )
     body.append(label)
     scope, _ = text(
-        "PUBLIC + PRIVATE", W - PAD, 56, 14, c["ember_small"], weight=600,
-        opsz=24, tracking=0.10, anchor="end",
+        "PUBLIC + PRIVATE", W - PAD, 55, 12, c["teal"], weight=500,
+        tracking=0.16, anchor="end", family="mono",
     )
     body.append(scope)
     body.append(
@@ -308,8 +345,8 @@ def contributions(theme_name: str) -> str:
     )
     body.append(head)
     sub, _ = text(
-        "IN THE LAST 12 MONTHS", PAD + number_w + 26, 208, 13, c["muted"],
-        weight=500, opsz=24, tracking=0.12,
+        "IN THE LAST 12 MONTHS", PAD + number_w + 26, 208, 12, c["muted"],
+        weight=400, tracking=0.16, family="mono",
     )
     body.append(sub)
 
@@ -324,13 +361,13 @@ def contributions(theme_name: str) -> str:
 
     grid_bottom = top + 7 * pitch - gap
     left_month, _ = text(
-        first.strftime("%b %Y").upper(), PAD, grid_bottom + 25, 13, c["muted"],
-        weight=500, opsz=24, tracking=0.10,
+        first.strftime("%b %Y").upper(), PAD, grid_bottom + 24, 12, c["muted"],
+        weight=400, tracking=0.14, family="mono",
     )
     right_month, _ = text(
         dt.date.fromisoformat(days[-1]["date"]).strftime("%b %Y").upper(),
-        W - PAD, grid_bottom + 25, 13, c["muted"], weight=500, opsz=24,
-        tracking=0.10, anchor="end",
+        W - PAD, grid_bottom + 24, 12, c["muted"], weight=400,
+        tracking=0.14, anchor="end", family="mono",
     )
     body.append(left_month)
     body.append(right_month)

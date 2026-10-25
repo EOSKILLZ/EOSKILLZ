@@ -29,19 +29,20 @@ Free to start, no card. OpenAI/Anthropic-compatible API, hundreds of models, BYO
 ## Stack
 
 <p align="center">
-  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-F2EDE6?style=flat-square&logo=typescript&logoColor=D9491F">
-  <img alt="Python" src="https://img.shields.io/badge/Python-F2EDE6?style=flat-square&logo=python&logoColor=D9491F">
-  <img alt="Rust" src="https://img.shields.io/badge/Rust-F2EDE6?style=flat-square&logo=rust&logoColor=D9491F">
-  <img alt="React" src="https://img.shields.io/badge/React-F2EDE6?style=flat-square&logo=react&logoColor=D9491F">
-  <img alt="Next.js" src="https://img.shields.io/badge/Next.js-F2EDE6?style=flat-square&logo=nextdotjs&logoColor=D9491F">
-  <img alt="Node.js" src="https://img.shields.io/badge/Node.js-F2EDE6?style=flat-square&logo=nodedotjs&logoColor=D9491F">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-172126?style=flat-square&logo=typescript&logoColor=F59A4B">
+  <img alt="Python" src="https://img.shields.io/badge/Python-172126?style=flat-square&logo=python&logoColor=F59A4B">
+  <img alt="Rust" src="https://img.shields.io/badge/Rust-172126?style=flat-square&logo=rust&logoColor=F59A4B">
+  <img alt="React" src="https://img.shields.io/badge/React-172126?style=flat-square&logo=react&logoColor=F59A4B">
   <br>
-  <img alt="Tauri" src="https://img.shields.io/badge/Tauri-F2EDE6?style=flat-square&logo=tauri&logoColor=D9491F">
-  <img alt="Tailwind" src="https://img.shields.io/badge/Tailwind-F2EDE6?style=flat-square&logo=tailwindcss&logoColor=D9491F">
-  <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-F2EDE6?style=flat-square&logo=postgresql&logoColor=D9491F">
-  <img alt="SQLite" src="https://img.shields.io/badge/SQLite-F2EDE6?style=flat-square&logo=sqlite&logoColor=D9491F">
-  <img alt="Docker" src="https://img.shields.io/badge/Docker-F2EDE6?style=flat-square&logo=docker&logoColor=D9491F">
-  <img alt="Cloudflare" src="https://img.shields.io/badge/Cloudflare-F2EDE6?style=flat-square&logo=cloudflare&logoColor=D9491F">
+  <img alt="Next.js" src="https://img.shields.io/badge/Next.js-172126?style=flat-square&logo=nextdotjs&logoColor=F59A4B">
+  <img alt="Node.js" src="https://img.shields.io/badge/Node.js-172126?style=flat-square&logo=nodedotjs&logoColor=F59A4B">
+  <img alt="Tailwind" src="https://img.shields.io/badge/Tailwind-172126?style=flat-square&logo=tailwindcss&logoColor=F59A4B">
+  <img alt="Tauri" src="https://img.shields.io/badge/Tauri-172126?style=flat-square&logo=tauri&logoColor=F59A4B">
+  <br>
+  <img alt="Postgres" src="https://img.shields.io/badge/Postgres-172126?style=flat-square&logo=postgresql&logoColor=F59A4B">
+  <img alt="SQLite" src="https://img.shields.io/badge/SQLite-172126?style=flat-square&logo=sqlite&logoColor=F59A4B">
+  <img alt="Docker" src="https://img.shields.io/badge/Docker-172126?style=flat-square&logo=docker&logoColor=F59A4B">
+  <img alt="Cloudflare" src="https://img.shields.io/badge/Cloudflare-172126?style=flat-square&logo=cloudflare&logoColor=F59A4B">
 </p>
 
 <p align="center">
@@ -59,8 +60,8 @@ Free to start, no card. OpenAI/Anthropic-compatible API, hundreds of models, BYO
 **YAP.REST** — link-in-bio platform that reached **300+ users** · retired
 
 <p align="center">
-  <a href="https://ache.lol"><img alt="ache.lol" src="https://img.shields.io/badge/ACHE.LOL-D9491F?style=flat-square"></a>
-  <a href="https://virex.dev/commissions/submit"><img alt="Start a project" src="https://img.shields.io/badge/START%20A%20PROJECT-F2EDE6?style=flat-square"></a>
+  <a href="https://ache.lol"><img alt="ache.lol" src="https://img.shields.io/badge/ACHE.LOL-B23A12?style=flat-square"></a>
+  <a href="https://virex.dev/commissions/submit"><img alt="Start a project" src="https://img.shields.io/badge/START%20A%20PROJECT-172126?style=flat-square"></a>
 </p>
 
 <p align="center"><sub>New York · open to select commissions</sub></p>
