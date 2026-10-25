@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Build the profile README art: two theme-aware hero banners, a contributions
-card that counts public + private work, and a framed Ache Desktop capture.
-Text is converted to SVG paths so the typography is identical everywhere
-GitHub renders the images."""
+"""Build the profile README art: theme- and width-aware hero banners, a
+contributions card that counts public + private work, a badge wall, and a
+framed Ache Desktop capture. Text is converted to SVG paths so the typography
+is identical everywhere GitHub renders the images."""
 
 from __future__ import annotations
 
@@ -158,7 +158,7 @@ THEME = {
         "ember_light": "#F59A4B",
         "teal": "#087B96",
         "glow": 0.0,
-        "grid": 0.030,
+        "grid": 0.050,
     },
     "dark": {
         "bg": "#0D0F10",
@@ -171,17 +171,17 @@ THEME = {
         "ember_light": "#FFB27A",
         "teal": "#4FC3D9",
         "glow": 0.08,
-        "grid": 0.045,
+        "grid": 0.055,
     },
 }
 
 
 GRID_STEP = (W - PAD * 2) / 12
-MARK_APEX = PAD + GRID_STEP * 10
+MARK_APEX = 800
 MARK_TOP = 190
 MARK_SLOPE = 0.543  # matches the chevron in the Ache app icon
-MARK_STROKE = 56
-MARK_DOT_R = 24
+MARK_STROKE = 48
+MARK_DOT_R = 21
 
 
 def hero(theme_name: str) -> str:
@@ -190,7 +190,7 @@ def hero(theme_name: str) -> str:
     body = [f'<rect width="{W}" height="{H}" fill="{c["bg"]}"/>']
 
     # Technical grid, barely there; the columns land on the frame.
-    body.append(f'<g stroke="{c["hair"]}" stroke-opacity="{c["grid"]}" stroke-width="1">')
+    body.append(f'<g stroke="{c["hair"]}" stroke-opacity="{c["grid"]}" stroke-width="1.2">')
     for i in range(13):
         x = PAD + GRID_STEP * i
         body.append(f'<path d="M{x:.2f} 84V{H}"/>')
@@ -263,8 +263,8 @@ def hero(theme_name: str) -> str:
     name_w = name_units * size / UPEM
     name, _ = text("Ache", PAD + 2, 508, size, c["ink"], weight=600, opsz=96, tracking=track)
     period, _ = text(
-        ".", PAD + 2 + name_w, 508, size, c["teal"], weight=600, opsz=96,
-        tracking=track,
+        ".", PAD + 2 + name_w + size * 0.026, 508, size, c["teal"], weight=600,
+        opsz=96, tracking=track,
     )
     body.append(name)
     body.append(period)
@@ -295,11 +295,81 @@ def hero(theme_name: str) -> str:
     )
 
 
-CARD_H = 425
-CARD_LEVELS = {
-    "light": ["#EDEAE5", "#F7CBB9", "#F0A07D", "#E6744C", "#E4572E"],
-    "dark": ["#1B1C1D", "#5C2A18", "#A63F23", "#DD5836", "#FF7A4D"],
-}
+NARROW_W, NARROW_H = 360, 232
+
+
+def hero_narrow(theme_name: str) -> str:
+    """The phone artboard: type-led, no grid, the mark cut down to a glyph."""
+    c = THEME[theme_name]
+    width, height = NARROW_W, NARROW_H
+    pad = 22
+    right = width - pad
+    body = [f'<rect width="{width}" height="{height}" fill="{c["bg"]}"/>']
+
+    body.append(f'<rect x="{pad}" y="21" width="6" height="6" fill="{c["ember"]}"/>')
+    brand, _ = text(
+        "SKILLZ", pad + 14, 28, 11, c["ink"], weight=600, opsz=48, tracking=0.08
+    )
+    body.append(brand)
+
+    # The mark, small enough to read as a signature rather than a poster.
+    apex_x, apex_y = right - 10, 20
+    half = 28 * MARK_SLOPE
+    body.append(
+        f"""<linearGradient id="mark" x1="0.1" y1="1" x2="0.9" y2="0">
+      <stop offset="0" stop-color="{c['ember_deep']}"/>
+      <stop offset="1" stop-color="{c['ember_light']}"/>
+    </linearGradient>
+    <path d="M{apex_x - half:.1f} {apex_y + 28} L{apex_x} {apex_y} L{apex_x + half:.1f} {apex_y + 28}"
+      fill="none" stroke="url(#mark)" stroke-width="10"
+      stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="{apex_x}" cy="{apex_y - 5 - 2 - 4}" r="4" fill="{c['ember_light']}"/>"""
+    )
+
+    body.append(
+        f'<rect x="{pad}" y="44" width="{width - pad * 2}" height="1" '
+        f'fill="{c["hair"]}" opacity="{c["hair_op"]}"/>'
+    )
+
+    build, _ = text(
+        "I build", pad, 106, 21, c["ink"], weight=500, opsz=48, tracking=-0.005
+    )
+    body.append(build)
+
+    size, track = 108, -0.05
+    _, name_units = shape("Ache", 600, 96, track)
+    name_w = name_units * size / UPEM
+    name, _ = text("Ache", pad, 200, size, c["ink"], weight=600, opsz=96, tracking=track)
+    period, _ = text(
+        ".", pad + name_w + size * 0.026, 200, size, c["teal"], weight=600,
+        opsz=96, tracking=track,
+    )
+    body.append(name)
+    body.append(period)
+
+    foot, _ = text(
+        "NEW YORK · AI WORKSPACE", pad, 222, 9.5, c["muted"], weight=400,
+        tracking=0.14, family="mono",
+    )
+    body.append(foot)
+    link, _ = text(
+        "ACHE.LOL", right, 222, 9.5, c["teal"], weight=500, tracking=0.14,
+        anchor="end", family="mono",
+    )
+    body.append(link)
+
+    title = "Skillz — independent software engineer. I build Ache."
+    desc = "I build Ache. Ache is an AI workspace, API, CLI, and desktop app."
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
+        f'viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">'
+        f'<title id="title">{title}</title><desc id="desc">{desc}</desc>'
+        + "".join(body)
+        + "</svg>"
+    )
+
+
+CARD_W, CARD_H = 1040, 304
 
 
 STACK = [
@@ -311,7 +381,7 @@ STACK = [
     ("electron", "Electron"),
     ("tailwindcss", "Tailwind"),
     ("github", "GitHub"),
-    ("postgresql", "PostgreSQL"),
+    ("express", "Express"),
     ("sqlite", "SQLite"),
     ("docker", "Docker"),
     ("cloudflare", "Cloudflare"),
@@ -327,39 +397,44 @@ def icon_path(slug: str) -> str:
     return text.split(' d="', 1)[1].split('"', 1)[0]
 
 
-def badges(theme_name: str, cols: int = 6) -> str:
-    """A badge wall that stays legible at the width it is rendered at."""
+def badges(theme_name: str, narrow: bool = False) -> str:
+    """A badge wall drawn at the width it is rendered at, never scaled down."""
     c = THEME[theme_name]
-    width = 1040 if cols == 6 else 520
-    pad = 56 if cols == 6 else 24
-    gap = 10
+    if narrow:
+        width, pad, cols, gap = 400, 20, 3, 8
+        pad_y, chip_h, row_gap = 8, 40, 8
+        icon_size, icon_x, label_x, label_size, label_base = 14, 10, 30, 12.5, 25
+    else:
+        width, pad, cols, gap = 1040, 56, 6, 10
+        pad_y, chip_h, row_gap = 8, 36, 10
+        icon_size, icon_x, label_x, label_size, label_base = 15, 14, 38, 12.5, 23
     chip_w = (width - pad * 2 - gap * (cols - 1)) / cols
-    chip_h, row_gap = 36, 10
     rows = -(-len(STACK) // cols)
-    height = chip_h * rows + row_gap * (rows - 1)
-    chip_fill = "#172126" if theme_name == "light" else "#1A1C1D"
+    height = pad_y * 2 + chip_h * rows + row_gap * (rows - 1)
+    chip_fill = "#172126" if theme_name == "light" else "#202325"
     label_fill = "#F5F2ED"
     stroke = (
         ""
         if theme_name == "light"
-        else f' stroke="{c["ink"]}" stroke-opacity="0.10"'
+        else f' stroke="{c["ink"]}" stroke-opacity="0.14"'
     )
+    scale = icon_size / 24
 
     body = []
     for i, (slug, label) in enumerate(STACK):
         x = pad + (i % cols) * (chip_w + gap)
-        y = (i // cols) * (chip_h + row_gap)
+        y = pad_y + (i // cols) * (chip_h + row_gap)
         body.append(
             f'<rect x="{x:.2f}" y="{y}" width="{chip_w:.2f}" height="{chip_h}" '
             f'rx="7" fill="{chip_fill}"{stroke}/>'
         )
         body.append(
-            f'<g transform="translate({x + 14:.2f} {y + 10.5:.2f}) scale(0.625)">'
-            f'<path d="{icon_path(slug)}" fill="{c["ember_light"]}"/></g>'
+            f'<g transform="translate({x + icon_x:.2f} {y + (chip_h - icon_size) / 2:.2f}) '
+            f'scale({scale:.4f})"><path d="{icon_path(slug)}" fill="#F59A4B"/></g>'
         )
         name, _ = text(
-            label, x + 38, y + 23, 12.5, label_fill, weight=500, tracking=0.01,
-            family="mono",
+            label, x + label_x, y + label_base, label_size, label_fill, weight=500,
+            tracking=0.01, family="mono",
         )
         body.append(name)
 
@@ -374,86 +449,77 @@ def badges(theme_name: str, cols: int = 6) -> str:
     )
 
 
-def contributions(theme_name: str) -> str:
-    """Total contributions card: public and private, with a year heatmap."""
+def contributions(theme_name: str, narrow: bool = False) -> str:
+    """The one number that includes private work, set as a title card."""
     c = THEME[theme_name]
     data = calendar()
     days = data["contributions"]
     total = data["total"]["lastYear"]
-
-    inner = W - PAD * 2
-    right = W - PAD
-    gap = 3
     first = dt.date.fromisoformat(days[0]["date"])
-    offset = (first.weekday() + 1) % 7  # Monday=0 -> Sunday=0
-    cols = -(-(offset + len(days)) // 7)
-    pitch = (inner + gap) / cols
-    cell = pitch - gap
-    top = 252
+    last = dt.date.fromisoformat(days[-1]["date"])
+    span = f"{first.strftime('%b %Y').upper()} — {last.strftime('%b %Y').upper()}"
 
-    fills = CARD_LEVELS[theme_name]
-    body = [f'<rect width="{W}" height="{CARD_H}" fill="{c["bg"]}"/>']
-    body.append(f'<rect x="{PAD}" y="44" width="10" height="10" fill="{c["ember"]}"/>')
+    if narrow:
+        width, height, pad = 320, 200, 20
+        right = width - pad
+        mark, mark_y = 6, 19
+        label_size, label_x, label_base = 9, 32, 26
+        scope_size = 8
+        rule_y = 40
+        number_size, number_x, number_base = 100, 17, 126
+        cap_size, cap_x, cap_base = 9.5, 20, 164
+        span_size, span_base = 9, 186
+    else:
+        width, height, pad = CARD_W, CARD_H, 56
+        right = width - pad
+        mark, mark_y = 10, 32
+        label_size, label_x, label_base = 13, 78, 43
+        scope_size = 12
+        rule_y = 68
+        number_size, number_x, number_base = 190, 50, 232
+        cap_size, cap_x, cap_base = 12.5, 52, 286
+        span_size, span_base = 12, 286
+
+    body = [f'<rect width="{width}" height="{height}" fill="{c["bg"]}"/>']
+    body.append(
+        f'<rect x="{pad}" y="{mark_y}" width="{mark}" height="{mark}" fill="{c["ember"]}"/>'
+    )
     label, _ = text(
-        "GITHUB ACTIVITY", PAD + 22, 55, 13, c["ink"], weight=500,
+        "GITHUB ACTIVITY", label_x, label_base, label_size, c["ink"], weight=500,
         tracking=0.18, family="mono",
     )
     body.append(label)
     scope, _ = text(
-        "PUBLIC + PRIVATE", W - PAD, 55, 12, c["muted"], weight=400,
+        "PUBLIC + PRIVATE", right, label_base, scope_size, c["muted"], weight=400,
         tracking=0.16, anchor="end", family="mono",
     )
     body.append(scope)
     body.append(
-        f'<rect x="{PAD}" y="84" width="{inner}" height="1" fill="{c["hair"]}" opacity="{c["hair_op"]}"/>'
+        f'<rect x="{pad}" y="{rule_y}" width="{width - pad * 2}" height="1" '
+        f'fill="{c["hair"]}" opacity="{c["hair_op"]}"/>'
     )
 
-    number, number_w = text(
-        f"{total:,}", PAD - 4, 202, 138, c["ember"], weight=600, opsz=96,
-        tracking=-0.03,
+    number, _ = text(
+        f"{total:,}", number_x, number_base, number_size, c["ember"], weight=600,
+        opsz=96, tracking=-0.03,
     )
     body.append(number)
-    head, _ = text(
-        "CONTRIBUTIONS", right, 202, 19, c["ink"], weight=600,
-        opsz=48, tracking=0.12, anchor="end",
+    caption, _ = text(
+        "CONTRIBUTIONS · LAST 12 MONTHS", cap_x, cap_base, cap_size, c["muted"],
+        weight=400, tracking=0.16, family="mono",
     )
-    body.append(head)
-    sub, _ = text(
-        "IN THE LAST 12 MONTHS", right, 228, 12, c["muted"],
-        weight=400, tracking=0.16, anchor="end", family="mono",
+    body.append(caption)
+    dates, _ = text(
+        span, right, span_base, span_size, c["muted"], weight=400, tracking=0.14,
+        anchor="end", family="mono",
     )
-    body.append(sub)
-
-    for i, day in enumerate(days):
-        idx = offset + i
-        x = PAD + (idx // 7) * pitch
-        y = top + (idx % 7) * pitch
-        body.append(
-            f'<rect x="{x:.2f}" y="{y:.2f}" width="{cell:.2f}" height="{cell:.2f}" '
-            f'rx="{cell * 0.18:.2f}" fill="{fills[day["level"]]}"/>'
-        )
-
-    grid_bottom = top + 7 * pitch - gap
-    left_month, _ = text(
-        first.strftime("%b %Y").upper(), PAD, grid_bottom + 24, 12, c["muted"],
-        weight=400, tracking=0.14, family="mono",
-    )
-    right_month, _ = text(
-        dt.date.fromisoformat(days[-1]["date"]).strftime("%b %Y").upper(),
-        W - PAD, grid_bottom + 24, 12, c["muted"], weight=400,
-        tracking=0.14, anchor="end", family="mono",
-    )
-    body.append(left_month)
-    body.append(right_month)
+    body.append(dates)
 
     title = f"{total:,} contributions in the last 12 months"
-    desc = (
-        "A year of GitHub activity counted from the contribution graph, "
-        "including work in private repositories."
-    )
+    desc = "Public and private work counted from the GitHub contribution graph."
     return (
-        f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{CARD_H}" '
-        f'viewBox="0 0 {W} {CARD_H}" role="img" aria-labelledby="title desc">'
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
+        f'viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">'
         f'<title id="title">{title}</title><desc id="desc">{desc}</desc>'
         + "".join(body)
         + "</svg>"
@@ -512,21 +578,17 @@ def frame_screenshot() -> None:
 def main() -> None:
     ASSETS.mkdir(parents=True, exist_ok=True)
     for theme in ("light", "dark"):
-        hero_path = ASSETS / f"hero-{theme}.svg"
-        hero_path.write_text(hero(theme), encoding="utf-8")
-        print("wrote", hero_path, f"{hero_path.stat().st_size / 1024:.1f} KiB")
-
-        card_path = ASSETS / f"contributions-{theme}.svg"
-        card_path.write_text(contributions(theme), encoding="utf-8")
-        print("wrote", card_path, f"{card_path.stat().st_size / 1024:.1f} KiB")
-
-        badge_path = ASSETS / f"badges-{theme}.svg"
-        badge_path.write_text(badges(theme), encoding="utf-8")
-        print("wrote", badge_path, f"{badge_path.stat().st_size / 1024:.1f} KiB")
-
-        narrow_path = ASSETS / f"badges-{theme}-narrow.svg"
-        narrow_path.write_text(badges(theme, cols=3), encoding="utf-8")
-        print("wrote", narrow_path, f"{narrow_path.stat().st_size / 1024:.1f} KiB")
+        for name, svg in (
+            (f"hero-{theme}", hero(theme)),
+            (f"hero-{theme}-narrow", hero_narrow(theme)),
+            (f"contributions-{theme}", contributions(theme)),
+            (f"contributions-{theme}-narrow", contributions(theme, narrow=True)),
+            (f"badges-{theme}", badges(theme)),
+            (f"badges-{theme}-narrow", badges(theme, narrow=True)),
+        ):
+            path = ASSETS / f"{name}.svg"
+            path.write_text(svg, encoding="utf-8")
+            print("wrote", path, f"{path.stat().st_size / 1024:.1f} KiB")
     frame_screenshot()
 
 

@@ -3,8 +3,9 @@
 <p align="center">
   <a href="https://ache.lol">
     <picture>
+      <source media="(prefers-color-scheme: dark) and (max-width: 600px)" srcset="assets/hero-dark-narrow.svg">
+      <source media="(prefers-color-scheme: light) and (max-width: 600px)" srcset="assets/hero-light-narrow.svg">
       <source media="(prefers-color-scheme: dark)" srcset="assets/hero-dark.svg">
-      <source media="(prefers-color-scheme: light)" srcset="assets/hero-light.svg">
       <img src="assets/hero-light.svg" alt="Skillz — independent software engineer in New York. I build Ache.">
     </picture>
   </a>
@@ -12,7 +13,7 @@
 
 ## Ache
 
-My AI workspace: chat with your codebase, edit files, and preview the running app in one window.
+Ache is an AI workspace: chat with your codebase, edit files, and preview the running app in one window.
 
 <p align="center">
   <a href="https://ache.lol">
@@ -20,10 +21,14 @@ My AI workspace: chat with your codebase, edit files, and preview the running ap
   </a>
 </p>
 
-<p align="center"><sub>Conversation, files, and the live app in one window.</sub></p>
-
 **[Start free →](https://ache.lol/signup)** · [Desktop](https://ache.lol/desktop) · [Docs](https://ache.lol/docs)<br>
-<sub>Free to start, no card · OpenAI/Anthropic-compatible API · 480 models · BYOK · zero-data-retention routing on eligible models</sub>
+<sub>Free to start, no card · OpenAI/Anthropic-compatible API · 480 models · zero-data-retention on eligible models</sub>
+
+## Also built
+
+- **LocalOwl** — self-hosted AI code review for GitHub PRs, on your local LLM · [source](https://github.com/EOSKILLZ/LocalOwl)
+- **Pulse** — Discord bot that peaked at **100K+ users** · retired
+- **YAP.REST** — link-in-bio platform that peaked at **~500 users** · retired
 
 ## Tools I build with
 
@@ -32,24 +37,19 @@ My AI workspace: chat with your codebase, edit files, and preview the running ap
     <source media="(prefers-color-scheme: dark) and (max-width: 600px)" srcset="assets/badges-dark-narrow.svg">
     <source media="(prefers-color-scheme: light) and (max-width: 600px)" srcset="assets/badges-light-narrow.svg">
     <source media="(prefers-color-scheme: dark)" srcset="assets/badges-dark.svg">
-    <img src="assets/badges-light.svg" alt="TypeScript, Python, React, Vite, Node.js, Electron, Tailwind, GitHub, PostgreSQL, SQLite, Docker, Cloudflare">
+    <img src="assets/badges-light.svg" alt="TypeScript, Python, React, Vite, Node.js, Electron, Tailwind, GitHub, Express, SQLite, Docker, Cloudflare">
   </picture>
 </p>
-
-## Also built
-
-- **LocalOwl** — self-hosted AI code review for GitHub PRs, on your local LLM · [source](https://github.com/EOSKILLZ/LocalOwl)
-- **Pulse** — Discord bot that reached **100K+ users** · retired
-- **YAP.REST** — link-in-bio platform that reached **300+ users** · retired
 
 <p align="center">
   <picture>
+    <source media="(prefers-color-scheme: dark) and (max-width: 600px)" srcset="assets/contributions-dark-narrow.svg">
+    <source media="(prefers-color-scheme: light) and (max-width: 600px)" srcset="assets/contributions-light-narrow.svg">
     <source media="(prefers-color-scheme: dark)" srcset="assets/contributions-dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset="assets/contributions-light.svg">
-    <img width="860" src="assets/contributions-light.svg" alt="A year of GitHub contributions, public and private">
+    <img src="assets/contributions-light.svg" alt="Contributions in the last 12 months, public and private">
   </picture>
 </p>
 
 <p align="center">
-  <a href="https://virex.dev/commissions/submit"><b>Open to select commissions →</b></a>
+  <a href="https://virex.dev/commissions/submit"><b>Commissions via Virex →</b></a>
 </p>
