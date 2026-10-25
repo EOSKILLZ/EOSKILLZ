@@ -157,7 +157,7 @@ THEME = {
         "ember_deep": "#B23A12",
         "ember_light": "#F59A4B",
         "teal": "#087B96",
-        "glow": 0.06,
+        "glow": 0.0,
         "grid": 0.030,
     },
     "dark": {
@@ -170,10 +170,18 @@ THEME = {
         "ember_deep": "#E2542A",
         "ember_light": "#FFB27A",
         "teal": "#4FC3D9",
-        "glow": 0.10,
+        "glow": 0.08,
         "grid": 0.045,
     },
 }
+
+
+GRID_STEP = (W - PAD * 2) / 12
+MARK_APEX = PAD + GRID_STEP * 10
+MARK_TOP = 190
+MARK_SLOPE = 0.543  # matches the chevron in the Ache app icon
+MARK_STROKE = 56
+MARK_DOT_R = 24
 
 
 def hero(theme_name: str) -> str:
@@ -181,36 +189,39 @@ def hero(theme_name: str) -> str:
     right = W - PAD
     body = [f'<rect width="{W}" height="{H}" fill="{c["bg"]}"/>']
 
-    # Technical grid, barely there.
+    # Technical grid, barely there; the columns land on the frame.
     body.append(f'<g stroke="{c["hair"]}" stroke-opacity="{c["grid"]}" stroke-width="1">')
-    x = PAD
-    while x <= right:
-        body.append(f'<path d="M{x} 84V{H}"/>')
-        x += 80
+    for i in range(13):
+        x = PAD + GRID_STEP * i
+        body.append(f'<path d="M{x:.2f} 84V{H}"/>')
     y = 84
-    while y <= H:
+    while y < H:
         body.append(f'<path d="M{PAD} {y}H{right}"/>')
         y += 80
     body.append("</g>")
 
-    # Ember glow behind the mark.
-    body.append(
-        f"""<radialGradient id="glow" cx="0.79" cy="0.36" r="0.5">
+    # Ember glow behind the mark: dark mode only, and barely.
+    if c["glow"]:
+        body.append(
+            f"""<radialGradient id="glow" cx="0.80" cy="0.34" r="0.55">
       <stop offset="0" stop-color="{c['ember']}" stop-opacity="{c['glow']}"/>
       <stop offset="1" stop-color="{c['ember']}" stop-opacity="0"/>
     </radialGradient>
     <rect width="{W}" height="{H}" fill="url(#glow)"/>"""
-    )
+        )
 
-    # The Ache mark, monumental: chevron bleeding off the bottom edge.
+    # The Ache mark, monumental: the right leg runs off the frame.
+    half = (H - MARK_TOP) * MARK_SLOPE
     body.append(
         f"""<linearGradient id="mark" x1="0.1" y1="1" x2="0.9" y2="0">
       <stop offset="0" stop-color="{c['ember_deep']}"/>
       <stop offset="1" stop-color="{c['ember_light']}"/>
     </linearGradient>
-    <path d="M690 600 L838 190 L986 600" fill="none" stroke="url(#mark)"
-      stroke-width="56" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="838" cy="130" r="18" fill="{c['ember_light']}"/>"""
+    <path d="M{MARK_APEX - half:.1f} {H} L{MARK_APEX:.1f} {MARK_TOP} L{MARK_APEX + half:.1f} {H}"
+      fill="none" stroke="url(#mark)" stroke-width="{MARK_STROKE}"
+      stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="{MARK_APEX:.1f}" cy="{MARK_TOP - MARK_STROKE / 2 - 12 - MARK_DOT_R}"
+      r="{MARK_DOT_R}" fill="{c['ember_light']}"/>"""
     )
 
     # Frame: wordmark, place, hairline.
@@ -243,16 +254,16 @@ def hero(theme_name: str) -> str:
 
     # Headline: quiet verb, loud name.
     build, _ = text(
-        "I build", PAD, 350, 56, c["ink"], weight=500, opsz=48, tracking=-0.01
+        "I build", PAD, 348, 48, c["ink"], weight=500, opsz=48, tracking=-0.005
     )
     body.append(build)
 
     size, track = 190, -0.05
     _, name_units = shape("Ache", 600, 96, track)
     name_w = name_units * size / UPEM
-    name, _ = text("Ache", PAD - 4, 508, size, c["ink"], weight=600, opsz=96, tracking=track)
+    name, _ = text("Ache", PAD + 2, 508, size, c["ink"], weight=600, opsz=96, tracking=track)
     period, _ = text(
-        ".", PAD - 4 + name_w, 508, size, c["teal"], weight=600, opsz=96,
+        ".", PAD + 2 + name_w, 508, size, c["teal"], weight=600, opsz=96,
         tracking=track,
     )
     body.append(name)
@@ -299,6 +310,7 @@ def contributions(theme_name: str) -> str:
     total = data["total"]["lastYear"]
 
     inner = W - PAD * 2
+    right = W - PAD
     gap = 3
     first = dt.date.fromisoformat(days[0]["date"])
     offset = (first.weekday() + 1) % 7  # Monday=0 -> Sunday=0
@@ -306,16 +318,6 @@ def contributions(theme_name: str) -> str:
     pitch = (inner + gap) / cols
     cell = pitch - gap
     top = 252
-
-    counts = sorted(d["count"] for d in days if d["count"] > 0)
-
-    def level(n: int) -> int:
-        if n <= 0:
-            return 0
-        return 1 + sum(
-            n > counts[min(len(counts) - 1, int(len(counts) * p))]
-            for p in (0.25, 0.5, 0.75)
-        )
 
     fills = CARD_LEVELS[theme_name]
     body = [f'<rect width="{W}" height="{CARD_H}" fill="{c["bg"]}"/>']
@@ -326,7 +328,7 @@ def contributions(theme_name: str) -> str:
     )
     body.append(label)
     scope, _ = text(
-        "PUBLIC + PRIVATE", W - PAD, 55, 12, c["teal"], weight=500,
+        "PUBLIC + PRIVATE", W - PAD, 55, 12, c["muted"], weight=400,
         tracking=0.16, anchor="end", family="mono",
     )
     body.append(scope)
@@ -335,18 +337,18 @@ def contributions(theme_name: str) -> str:
     )
 
     number, number_w = text(
-        f"{total:,}", PAD - 4, 214, 138, c["ember"], weight=600, opsz=96,
+        f"{total:,}", PAD - 4, 202, 138, c["ember"], weight=600, opsz=96,
         tracking=-0.03,
     )
     body.append(number)
     head, _ = text(
-        "CONTRIBUTIONS", PAD + number_w + 26, 182, 19, c["ink"], weight=600,
-        opsz=48, tracking=0.12,
+        "CONTRIBUTIONS", right, 202, 19, c["ink"], weight=600,
+        opsz=48, tracking=0.12, anchor="end",
     )
     body.append(head)
     sub, _ = text(
-        "IN THE LAST 12 MONTHS", PAD + number_w + 26, 208, 12, c["muted"],
-        weight=400, tracking=0.16, family="mono",
+        "IN THE LAST 12 MONTHS", right, 228, 12, c["muted"],
+        weight=400, tracking=0.16, anchor="end", family="mono",
     )
     body.append(sub)
 
@@ -356,7 +358,7 @@ def contributions(theme_name: str) -> str:
         y = top + (idx % 7) * pitch
         body.append(
             f'<rect x="{x:.2f}" y="{y:.2f}" width="{cell:.2f}" height="{cell:.2f}" '
-            f'rx="{cell * 0.18:.2f}" fill="{fills[level(day["count"])]}"/>'
+            f'rx="{cell * 0.18:.2f}" fill="{fills[day["level"]]}"/>'
         )
 
     grid_bottom = top + 7 * pitch - gap
@@ -389,6 +391,13 @@ def contributions(theme_name: str) -> str:
 def frame_screenshot() -> None:
     """Round the Ache Desktop capture and give it a hairline + soft shadow."""
     src = Image.open(ensure(SCREENSHOT_URL, SCREENSHOT_PATH)).convert("RGBA")
+
+    # Ache's capture has a duplicated word in a collapsed tool row. Lift a clean
+    # strip of the same pane over it so the screenshot reads properly.
+    if src.size == (1920, 780):
+        clean = src.crop((45, 158, 935, 186))
+        src.paste(clean, (45, 188))
+
     shot_w, shot_h = src.size
     radius = 18
     pad = 36
