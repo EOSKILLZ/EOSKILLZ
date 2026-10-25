@@ -27,17 +27,11 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-stats.vercel.app/api?username=EOSKILLZ&show_icons=true&hide_border=true&bg_color=0A0A0A&title_color=FF6B4A&icon_color=FF6B4A&text_color=F7EEE9&rank_icon=github&hide=contribs&custom_title=Public%20GitHub%20Stats">
-    <img width="412" src="https://github-readme-stats.vercel.app/api?username=EOSKILLZ&show_icons=true&hide_border=true&bg_color=F2EDE6&title_color=D9491F&icon_color=D9491F&text_color=17130F&rank_icon=github&hide=contribs&custom_title=Public%20GitHub%20Stats" alt="Public GitHub stats — stars, commits, pull requests, issues">
+    <img width="560" src="https://github-readme-stats.vercel.app/api?username=EOSKILLZ&show_icons=true&hide_border=true&bg_color=F2EDE6&title_color=D9491F&icon_color=D9491F&text_color=17130F&rank_icon=github&hide=contribs&custom_title=Public%20GitHub%20Stats" alt="Public GitHub stats — stars, commits, pull requests, issues">
   </picture>
-  <a href="https://github.com/EOSKILLZ/LocalOwl">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-stats.vercel.app/api/pin/?username=EOSKILLZ&repo=LocalOwl&show_owner=false&hide_border=true&bg_color=0A0A0A&title_color=FF6B4A&icon_color=FF6B4A&text_color=F7EEE9&description_lines_count=2">
-      <img width="429" src="https://github-readme-stats.vercel.app/api/pin/?username=EOSKILLZ&repo=LocalOwl&show_owner=false&hide_border=true&bg_color=F2EDE6&title_color=D9491F&icon_color=D9491F&text_color=17130F&description_lines_count=2" alt="LocalOwl — self-hosted AI code review for GitHub">
-    </picture>
-  </a>
 </p>
 
-<p align="center"><sub>Public stats on the left. The rest lives in Ache.</sub></p>
+<p align="center"><sub>Public activity only. The rest lives in Ache.</sub></p>
 
 ## Ache
 
@@ -55,6 +49,7 @@ Website, CLI, desktop app, and an OpenAI/Anthropic-compatible API — hundreds o
 
 ## Also built
 
+**LocalOwl** — local-only AI code review · [source](https://github.com/EOSKILLZ/LocalOwl)  
 **Pulse** — Discord bot · **100K+ users** · retired  
 **YAP.REST** — link-in-bio platform · **300+ users** · retired
 
