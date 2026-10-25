@@ -33,6 +33,7 @@ Free to start, no card. OpenAI/Anthropic-compatible API, hundreds of models, BYO
   <img alt="React" src="https://img.shields.io/badge/React-F2EDE6?style=flat-square&logo=react&logoColor=D9491F">
   <img alt="Next.js" src="https://img.shields.io/badge/Next.js-F2EDE6?style=flat-square&logo=nextdotjs&logoColor=D9491F">
   <img alt="Node.js" src="https://img.shields.io/badge/Node.js-F2EDE6?style=flat-square&logo=nodedotjs&logoColor=D9491F">
+  <br>
   <img alt="Tauri" src="https://img.shields.io/badge/Tauri-F2EDE6?style=flat-square&logo=tauri&logoColor=D9491F">
   <img alt="Tailwind" src="https://img.shields.io/badge/Tailwind-F2EDE6?style=flat-square&logo=tailwindcss&logoColor=D9491F">
   <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-F2EDE6?style=flat-square&logo=postgresql&logoColor=D9491F">
