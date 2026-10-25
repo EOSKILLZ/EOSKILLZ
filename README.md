@@ -3,8 +3,8 @@
 <p align="center">
   <a href="https://ache.lol">
     <picture>
-      <source media="(prefers-color-scheme: dark) and (max-width: 600px)" srcset="assets/hero-dark-narrow.svg">
-      <source media="(prefers-color-scheme: light) and (max-width: 600px)" srcset="assets/hero-light-narrow.svg">
+      <source media="(prefers-color-scheme: dark) and (max-width: 1100px)" srcset="assets/hero-dark-narrow.svg">
+      <source media="(prefers-color-scheme: light) and (max-width: 1100px)" srcset="assets/hero-light-narrow.svg">
       <source media="(prefers-color-scheme: dark)" srcset="assets/hero-dark.svg">
       <img src="assets/hero-light.svg" alt="Skillz — independent software engineer in New York. I build Ache.">
     </picture>
@@ -34,22 +34,22 @@ Ache is an AI workspace: chat with your codebase, edit files, and preview the ru
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark) and (max-width: 600px)" srcset="assets/badges-dark-narrow.svg">
-    <source media="(prefers-color-scheme: light) and (max-width: 600px)" srcset="assets/badges-light-narrow.svg">
+    <source media="(prefers-color-scheme: dark) and (max-width: 1100px)" srcset="assets/badges-dark-narrow.svg">
+    <source media="(prefers-color-scheme: light) and (max-width: 1100px)" srcset="assets/badges-light-narrow.svg">
     <source media="(prefers-color-scheme: dark)" srcset="assets/badges-dark.svg">
-    <img src="assets/badges-light.svg" alt="TypeScript, Python, React, Vite, Node.js, Electron, Tailwind, GitHub, Express, SQLite, Docker, Cloudflare">
+    <img src="assets/badges-light.svg" alt="TypeScript, Python, React, Vite, Node.js, Electron, Tailwind, GitHub, Sentry, SQLite, Docker, Cloudflare">
   </picture>
 </p>
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark) and (max-width: 600px)" srcset="assets/contributions-dark-narrow.svg">
-    <source media="(prefers-color-scheme: light) and (max-width: 600px)" srcset="assets/contributions-light-narrow.svg">
+    <source media="(prefers-color-scheme: dark) and (max-width: 1100px)" srcset="assets/contributions-dark-narrow.svg">
+    <source media="(prefers-color-scheme: light) and (max-width: 1100px)" srcset="assets/contributions-light-narrow.svg">
     <source media="(prefers-color-scheme: dark)" srcset="assets/contributions-dark.svg">
     <img src="assets/contributions-light.svg" alt="Contributions in the last 12 months, public and private">
   </picture>
 </p>
 
 <p align="center">
-  <a href="https://virex.dev/commissions/submit"><b>Commissions via Virex →</b></a>
+  <a href="https://virex.dev/commissions/submit"><b>Work with me via Virex →</b></a>
 </p>

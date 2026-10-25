@@ -295,65 +295,62 @@ def hero(theme_name: str) -> str:
     )
 
 
-NARROW_W, NARROW_H = 360, 232
+NARROW_W, NARROW_H = 400, 248
 
 
 def hero_narrow(theme_name: str) -> str:
-    """The phone artboard: type-led, no grid, the mark cut down to a glyph."""
+    """The narrow artboard: type-led, no grid, the mark cut down to a glyph.
+    Shares its 400px width with the card and badge wall so all three art blocks
+    align in a tablet column, and all three cap to the phone column."""
     c = THEME[theme_name]
     width, height = NARROW_W, NARROW_H
-    pad = 22
+    pad = 24
     right = width - pad
     body = [f'<rect width="{width}" height="{height}" fill="{c["bg"]}"/>']
 
-    body.append(f'<rect x="{pad}" y="21" width="6" height="6" fill="{c["ember"]}"/>')
+    body.append(f'<rect x="{pad}" y="23" width="6" height="6" fill="{c["ember"]}"/>')
     brand, _ = text(
-        "SKILLZ", pad + 14, 28, 11, c["ink"], weight=600, opsz=48, tracking=0.08
+        "SKILLZ", pad + 15, 30, 12, c["ink"], weight=600, opsz=48, tracking=0.08
     )
     body.append(brand)
 
     # The mark, small enough to read as a signature rather than a poster.
-    apex_x, apex_y = right - 10, 20
-    half = 28 * MARK_SLOPE
+    apex_x, apex_y = right - 30 * MARK_SLOPE - 5.5, 21
+    half = 30 * MARK_SLOPE
     body.append(
         f"""<linearGradient id="mark" x1="0.1" y1="1" x2="0.9" y2="0">
       <stop offset="0" stop-color="{c['ember_deep']}"/>
       <stop offset="1" stop-color="{c['ember_light']}"/>
     </linearGradient>
-    <path d="M{apex_x - half:.1f} {apex_y + 28} L{apex_x} {apex_y} L{apex_x + half:.1f} {apex_y + 28}"
-      fill="none" stroke="url(#mark)" stroke-width="10"
+    <path d="M{apex_x - half:.1f} {apex_y + 30} L{apex_x} {apex_y} L{apex_x + half:.1f} {apex_y + 30}"
+      fill="none" stroke="url(#mark)" stroke-width="11"
       stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="{apex_x}" cy="{apex_y - 5 - 2 - 4}" r="4" fill="{c['ember_light']}"/>"""
-    )
-
-    body.append(
-        f'<rect x="{pad}" y="44" width="{width - pad * 2}" height="1" '
-        f'fill="{c["hair"]}" opacity="{c["hair_op"]}"/>'
+    <circle cx="{apex_x}" cy="{apex_y - 5.5 - 2 - 4.5}" r="4.5" fill="{c['ember_light']}"/>"""
     )
 
     build, _ = text(
-        "I build", pad, 106, 21, c["ink"], weight=500, opsz=48, tracking=-0.005
+        "I build", pad, 113, 23, c["ink"], weight=500, opsz=48, tracking=-0.005
     )
     body.append(build)
 
-    size, track = 108, -0.05
+    size, track = 120, -0.05
     _, name_units = shape("Ache", 600, 96, track)
     name_w = name_units * size / UPEM
-    name, _ = text("Ache", pad, 200, size, c["ink"], weight=600, opsz=96, tracking=track)
+    name, _ = text("Ache", pad, 212, size, c["ink"], weight=600, opsz=96, tracking=track)
     period, _ = text(
-        ".", pad + name_w + size * 0.026, 200, size, c["teal"], weight=600,
+        ".", pad + name_w + size * 0.026, 212, size, c["teal"], weight=600,
         opsz=96, tracking=track,
     )
     body.append(name)
     body.append(period)
 
     foot, _ = text(
-        "NEW YORK · AI WORKSPACE", pad, 222, 9.5, c["muted"], weight=400,
-        tracking=0.14, family="mono",
+        "INDEPENDENT SOFTWARE ENGINEER", pad, 236, 12, c["muted"], weight=400,
+        tracking=0.05, family="mono",
     )
     body.append(foot)
     link, _ = text(
-        "ACHE.LOL", right, 222, 9.5, c["teal"], weight=500, tracking=0.14,
+        "ACHE.LOL", right, 236, 12, c["teal"], weight=500, tracking=0.14,
         anchor="end", family="mono",
     )
     body.append(link)
@@ -381,7 +378,7 @@ STACK = [
     ("electron", "Electron"),
     ("tailwindcss", "Tailwind"),
     ("github", "GitHub"),
-    ("express", "Express"),
+    ("sentry", "Sentry"),
     ("sqlite", "SQLite"),
     ("docker", "Docker"),
     ("cloudflare", "Cloudflare"),
@@ -401,7 +398,7 @@ def badges(theme_name: str, narrow: bool = False) -> str:
     """A badge wall drawn at the width it is rendered at, never scaled down."""
     c = THEME[theme_name]
     if narrow:
-        width, pad, cols, gap = 400, 20, 3, 8
+        width, pad, cols, gap = 400, 24, 3, 8
         pad_y, chip_h, row_gap = 8, 40, 8
         icon_size, icon_x, label_x, label_size, label_base = 14, 10, 30, 12.5, 25
     else:
@@ -460,15 +457,15 @@ def contributions(theme_name: str, narrow: bool = False) -> str:
     span = f"{first.strftime('%b %Y').upper()} — {last.strftime('%b %Y').upper()}"
 
     if narrow:
-        width, height, pad = 320, 200, 20
+        width, height, pad = 400, 250, 24
         right = width - pad
-        mark, mark_y = 6, 19
-        label_size, label_x, label_base = 9, 32, 26
-        scope_size = 8
-        rule_y = 40
-        number_size, number_x, number_base = 100, 17, 126
-        cap_size, cap_x, cap_base = 9.5, 20, 164
-        span_size, span_base = 9, 186
+        mark, mark_y = 7, 23
+        label_size, label_x, label_base = 10, 40, 31
+        scope_size = 10
+        rule_y = 48
+        number_size, number_x, number_base = 125, 21, 152
+        cap_size, cap_x, cap_base = 11.5, 24, 202
+        span_size, span_base = 11, 228
     else:
         width, height, pad = CARD_W, CARD_H, 56
         right = width - pad
