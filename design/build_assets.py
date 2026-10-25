@@ -302,6 +302,78 @@ CARD_LEVELS = {
 }
 
 
+STACK = [
+    ("typescript", "TypeScript"),
+    ("python", "Python"),
+    ("react", "React"),
+    ("vite", "Vite"),
+    ("nodedotjs", "Node.js"),
+    ("electron", "Electron"),
+    ("tailwindcss", "Tailwind"),
+    ("github", "GitHub"),
+    ("postgresql", "PostgreSQL"),
+    ("sqlite", "SQLite"),
+    ("docker", "Docker"),
+    ("cloudflare", "Cloudflare"),
+]
+ICON_URL = "https://cdn.simpleicons.org/{slug}/F59A4B"
+
+
+@lru_cache(maxsize=None)
+def icon_path(slug: str) -> str:
+    """The simple-icons glyph for a tool, as a single SVG path."""
+    path = CACHE / "icons" / f"{slug}.svg"
+    text = ensure(ICON_URL.format(slug=slug), path).read_text(encoding="utf-8")
+    return text.split(' d="', 1)[1].split('"', 1)[0]
+
+
+def badges(theme_name: str, cols: int = 6) -> str:
+    """A badge wall that stays legible at the width it is rendered at."""
+    c = THEME[theme_name]
+    width = 1040 if cols == 6 else 520
+    pad = 56 if cols == 6 else 24
+    gap = 10
+    chip_w = (width - pad * 2 - gap * (cols - 1)) / cols
+    chip_h, row_gap = 36, 10
+    rows = -(-len(STACK) // cols)
+    height = chip_h * rows + row_gap * (rows - 1)
+    chip_fill = "#172126" if theme_name == "light" else "#1A1C1D"
+    label_fill = "#F5F2ED"
+    stroke = (
+        ""
+        if theme_name == "light"
+        else f' stroke="{c["ink"]}" stroke-opacity="0.10"'
+    )
+
+    body = []
+    for i, (slug, label) in enumerate(STACK):
+        x = pad + (i % cols) * (chip_w + gap)
+        y = (i // cols) * (chip_h + row_gap)
+        body.append(
+            f'<rect x="{x:.2f}" y="{y}" width="{chip_w:.2f}" height="{chip_h}" '
+            f'rx="7" fill="{chip_fill}"{stroke}/>'
+        )
+        body.append(
+            f'<g transform="translate({x + 14:.2f} {y + 10.5:.2f}) scale(0.625)">'
+            f'<path d="{icon_path(slug)}" fill="{c["ember_light"]}"/></g>'
+        )
+        name, _ = text(
+            label, x + 38, y + 23, 12.5, label_fill, weight=500, tracking=0.01,
+            family="mono",
+        )
+        body.append(name)
+
+    title = "Tools I build with"
+    desc = ", ".join(label for _, label in STACK)
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
+        f'viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">'
+        f'<title id="title">{title}</title><desc id="desc">{desc}</desc>'
+        + "".join(body)
+        + "</svg>"
+    )
+
+
 def contributions(theme_name: str) -> str:
     """Total contributions card: public and private, with a year heatmap."""
     c = THEME[theme_name]
@@ -447,6 +519,14 @@ def main() -> None:
         card_path = ASSETS / f"contributions-{theme}.svg"
         card_path.write_text(contributions(theme), encoding="utf-8")
         print("wrote", card_path, f"{card_path.stat().st_size / 1024:.1f} KiB")
+
+        badge_path = ASSETS / f"badges-{theme}.svg"
+        badge_path.write_text(badges(theme), encoding="utf-8")
+        print("wrote", badge_path, f"{badge_path.stat().st_size / 1024:.1f} KiB")
+
+        narrow_path = ASSETS / f"badges-{theme}-narrow.svg"
+        narrow_path.write_text(badges(theme, cols=3), encoding="utf-8")
+        print("wrote", narrow_path, f"{narrow_path.stat().st_size / 1024:.1f} KiB")
     frame_screenshot()
 
 

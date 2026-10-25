@@ -28,18 +28,12 @@ My AI workspace: chat with your codebase, edit files, and preview the running ap
 ## Tools I build with
 
 <p align="center">
-  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-172126?style=flat-square&logo=typescript&logoColor=F59A4B">
-  <img alt="Python" src="https://img.shields.io/badge/Python-172126?style=flat-square&logo=python&logoColor=F59A4B">
-  <img alt="React" src="https://img.shields.io/badge/React-172126?style=flat-square&logo=react&logoColor=F59A4B">
-  <img alt="Vite" src="https://img.shields.io/badge/Vite-172126?style=flat-square&logo=vite&logoColor=F59A4B">
-  <img alt="Node.js" src="https://img.shields.io/badge/Node.js-172126?style=flat-square&logo=nodedotjs&logoColor=F59A4B">
-  <img alt="Electron" src="https://img.shields.io/badge/Electron-172126?style=flat-square&logo=electron&logoColor=F59A4B">
-  <img alt="Tailwind" src="https://img.shields.io/badge/Tailwind-172126?style=flat-square&logo=tailwindcss&logoColor=F59A4B">
-  <img alt="GitHub" src="https://img.shields.io/badge/GitHub-172126?style=flat-square&logo=github&logoColor=F59A4B">
-  <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-172126?style=flat-square&logo=postgresql&logoColor=F59A4B">
-  <img alt="SQLite" src="https://img.shields.io/badge/SQLite-172126?style=flat-square&logo=sqlite&logoColor=F59A4B">
-  <img alt="Docker" src="https://img.shields.io/badge/Docker-172126?style=flat-square&logo=docker&logoColor=F59A4B">
-  <img alt="Cloudflare" src="https://img.shields.io/badge/Cloudflare-172126?style=flat-square&logo=cloudflare&logoColor=F59A4B">
+  <picture>
+    <source media="(prefers-color-scheme: dark) and (max-width: 600px)" srcset="assets/badges-dark-narrow.svg">
+    <source media="(prefers-color-scheme: light) and (max-width: 600px)" srcset="assets/badges-light-narrow.svg">
+    <source media="(prefers-color-scheme: dark)" srcset="assets/badges-dark.svg">
+    <img src="assets/badges-light.svg" alt="TypeScript, Python, React, Vite, Node.js, Electron, Tailwind, GitHub, PostgreSQL, SQLite, Docker, Cloudflare">
+  </picture>
 </p>
 
 ## Also built
